@@ -22,6 +22,7 @@ const server = http.createServer((req, res) => {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ projects }));
 		}
+
 		if (req.method === 'POST') {
 			req.on('data', data => {
 				let stringifiedData = '';
@@ -59,8 +60,30 @@ const server = http.createServer((req, res) => {
 		if (req.method === 'GET') {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ projects }));
-		} else if (req.method === 'PUT') {
-			return (res.statusCode = 200);
+		} else if (req.method === 'PUT' || req.method === 'PATCH') {
+			req.on('data', data => {
+				let stringifiedData = '';
+				for (const chunk of data.toString()) {
+					stringifiedData += chunk;
+				}
+
+				const updatedProject = {
+					...projects[projIdx],
+					...JSON.parse(stringifiedData),
+				};
+				console.log(updatedProject);
+
+				projects.splice(projIdx, 1, updatedProject);
+
+				res.statusCode = 200;
+
+				return res.end(
+					JSON.stringify({
+						message: `project id ${projectId} was successfully updated`,
+						updatedProject,
+					})
+				);
+			});
 		} else if (req.method === 'DELETE') {
 			projects.splice(projIdx, 1);
 			res.statusCode = 200;
@@ -113,8 +136,30 @@ const server = http.createServer((req, res) => {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ jobs }));
 		} else {
-			if (req.method === 'PATCH') {
-				return (res.statusCode = 200);
+			if (req.method === 'PUT' || req.method === 'PATCH') {
+				req.on('data', data => {
+					let stringifiedData = '';
+					for (const chunk of data.toString()) {
+						stringifiedData += chunk;
+					}
+
+					const updatedJob = {
+						...jobs[jobIdx],
+						...JSON.parse(stringifiedData),
+					};
+					console.log(updatedJob);
+
+					jobs.splice(jobIdx, 1, updatedJob);
+
+					res.statusCode = 200;
+
+					return res.end(
+						JSON.stringify({
+							message: `Job id ${jobId} was successfully updated`,
+							updatedJob,
+						})
+					);
+				});
 			} else if (req.method === 'PUT') {
 				return (res.statusCode = 200);
 			} else if (req.method === 'DELETE') {
@@ -131,7 +176,7 @@ const server = http.createServer((req, res) => {
 
 	// Handle invalid routes
 	else {
-		res.end(JSON.stringify({ error: 'Not found' }));
+		return res.end(JSON.stringify({ error: 'Not found' }));
 	}
 });
 
