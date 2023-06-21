@@ -45,14 +45,31 @@ const server = http.createServer((req, res) => {
 			});
 		}
 	} else if (pathname.startsWith('/projects/')) {
-		const projectId = pathname.split('/')[2];
+		const projectId = Number(pathname.split('/')[2]);
+		const projIdx = projects.findIndex(proj => proj.id === projectId);
+
+		if (projIdx < 0) {
+			res.statusCode = 400;
+			return res.end(
+				JSON.stringify({
+					error: `Couldn\'t find a project with an id of ${projectId}`,
+				})
+			);
+		}
 		if (req.method === 'GET') {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ projects }));
 		} else if (req.method === 'PUT') {
 			return (res.statusCode = 200);
 		} else if (req.method === 'DELETE') {
-			return (res.statusCode = 200);
+			projects.splice(projIdx, 1);
+			res.statusCode = 200;
+
+			return res.end(
+				JSON.stringify({
+					message: `Project id ${projectId} was deleted successfully`,
+				})
+			);
 		}
 	}
 
@@ -81,14 +98,34 @@ const server = http.createServer((req, res) => {
 			});
 		}
 	} else if (pathname.startsWith('/jobs/')) {
-		const jobId = pathname.split('/')[2];
+		const jobId = Number(pathname.split('/')[2]);
+		const jobIdx = jobs.findIndex(job => job.id === jobId);
+
+		if (jobIdx < 0) {
+			res.statusCode = 400;
+			return res.end(
+				JSON.stringify({
+					error: `Couldn\'t find a job with an id of ${jobId}`,
+				})
+			);
+		}
 		if (req.method === 'GET') {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ jobs }));
-		} else if (req.method === 'PUT') {
-			return (res.statusCode = 200);
-		} else if (req.method === 'DELETE') {
-			return (res.statusCode = 200);
+		} else {
+			if (req.method === 'PATCH') {
+				return (res.statusCode = 200);
+			} else if (req.method === 'PUT') {
+				return (res.statusCode = 200);
+			} else if (req.method === 'DELETE') {
+				jobs.splice(jobIdx, 1);
+				res.statusCode = 200;
+				return res.end(
+					JSON.stringify({
+						message: `Job id ${jobId} was successfully deleted`,
+					})
+				);
+			}
 		}
 	}
 
