@@ -44,8 +44,7 @@ const server = http.createServer((req, res) => {
 				);
 			});
 		}
-	}
-	if (pathname.startsWith('/projects/')) {
+	} else if (pathname.startsWith('/projects/')) {
 		const projectId = pathname.split('/')[2];
 		if (req.method === 'GET') {
 			res.statusCode = 200;
@@ -58,7 +57,7 @@ const server = http.createServer((req, res) => {
 	}
 
 	// Jobs endpoints
-	if (pathname === '/jobs') {
+	else if (pathname === '/jobs') {
 		if (req.method === 'GET') {
 			res.statusCode = 200;
 			return res.end(JSON.stringify({ jobs }));
@@ -94,11 +93,9 @@ const server = http.createServer((req, res) => {
 	}
 
 	// Handle invalid routes
-	// if ([200, 201].includes(res.statusCode)) {
-	// 	res.end(JSON.stringify({ message: 'OK!' }));
-	// } else {
-	// 	res.end(JSON.stringify({ error: 'Not found' }));
-	// }
+	else {
+		res.end(JSON.stringify({ error: 'Not found' }));
+	}
 });
 
 // Start the server
