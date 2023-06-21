@@ -1,0 +1,28 @@
+// GET Jobs
+http://localhost:3000
+
+// POST Jobs
+http://localhost:3000/jobs
+{ "title": "Frontend Engineer", "company": "QGiv" }
+
+// PATCH Jobs
+http://localhost:3000/jobs/1
+{ "title": "Backend Engineer" }
+
+// DELETE Jobs
+http://localhost:3000/jobs/1
+
+
+// GET Projects
+http://localhost:3000/projects
+// POST Projects
+
+http://localhost:3000/projects
+{ "name": "no-express-server", "techs": ["nodeJS", "javascript"] }
+
+// PATCH Projects
+http://localhost:3000/projects/1
+{ "techs": ["nodeJS", "javascript", "ES6"] }
+
+// DELETE Projects
+http://localhost:3000/projects/1
